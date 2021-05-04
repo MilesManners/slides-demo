@@ -1,0 +1,42 @@
+name: Build and Deploy Slides
+
+on:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate
+        uses: docker://pandoc/core:2.9
+        with:
+          args: >-
+            --to revealjs
+            --standalone
+            --output output/index.html
+            -V revealjs-url=https://unpkg.com/reveal.js@4.x/
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: slides
+          path: output
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: slides
+      
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          branch: gh-pages
+          folder: 'slides'
