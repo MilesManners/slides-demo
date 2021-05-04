@@ -18,13 +18,14 @@ jobs:
           mkdir output
 
       - name: Generate
-        uses: docker://pandoc/core:2.9
+        uses: docker://pandoc/core:latest
         with:
           args: >-
             --to revealjs
             --standalone
             --output output/index.html
-            -V revealjs-url=https://unpkg.com/reveal.js@4.x
+            slides.md
+            -V revealjs-url=https://unpkg.com/reveal.js@^4
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
