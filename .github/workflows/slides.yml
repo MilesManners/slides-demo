@@ -3,12 +3,16 @@ name: Build and Deploy Slides
 on:
   push:
     branches: [main]
+    paths: [slides]
 
   workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    container:
+      image: docker://pandoc/core:latest
+      options: --entrypoint=sh
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.1
@@ -18,14 +22,8 @@ jobs:
           mkdir output
 
       - name: Generate
-        uses: docker://pandoc/core:latest
-        with:
-          args: >-
-            --to revealjs
-            --standalone
-            --output output/index.html
-            slides.md
-            -V revealjs-url=https://unpkg.com/reveal.js@^4
+        run: |
+          git diff-tree --no-commit-id --name-only -r HEAD~ slides | xargs -I{} sh -c 'pandoc {} -o output/$(basename {} .md).html --to revealjs --standalone -V revealjs-url=https://unpkg.com/reveal.js@^4' \;
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.1
