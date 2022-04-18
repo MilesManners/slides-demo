@@ -11,7 +11,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     container:
-      image: docker://pandoc/core:latest
+      image: docker://pandoc/core:latest-ubuntu
       options: --entrypoint=sh
     steps:
       - name: Checkout
@@ -24,10 +24,6 @@ jobs:
       - name: Generate
         run: |
           git diff-tree --no-commit-id --name-only -r HEAD~ slides | xargs -I{} sh -c 'pandoc {} -o output/$(basename {} .md).html --to revealjs --standalone -V revealjs-url=https://unpkg.com/reveal.js@^4' \;
-
-      - name: Install git
-        run: |
-          apk add --no-cache git
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.3.0
