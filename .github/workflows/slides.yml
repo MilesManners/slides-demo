@@ -25,6 +25,10 @@ jobs:
         run: |
           git diff-tree --no-commit-id --name-only -r HEAD~ slides | xargs -I{} sh -c 'pandoc {} -o output/$(basename {} .md).html --to revealjs --standalone -V revealjs-url=https://unpkg.com/reveal.js@^4' \;
 
+      - name: Install git
+        run: |
+          apt-get update && apt-get install -y git
+
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.3.0
         with:
