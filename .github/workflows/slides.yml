@@ -27,7 +27,7 @@ jobs:
 
       - name: Generate
         run: |
-          git diff-tree --no-commit-id --name-only -r HEAD~ slides | xargs -I{} sh -c 'pandoc {} -o output/$(basename {} .md).html --to revealjs --standalone -V revealjs-url=https://unpkg.com/reveal.js@^4' \;
+          find slides -iname "*.md" -type f -exec /bin/sh -c 'pandoc ${0} -o output/$(basename ${0} .md).html --to revealjs --standalone -V revealjs-url=https://unpkg.com/reveal.js@^4' {} \;
 
       - name: Install rsync
         run: |
