@@ -20,8 +20,6 @@ jobs:
       
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          sparse-checkout: slides
 
       - name: Create output directory
         run: |
